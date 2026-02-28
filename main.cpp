@@ -1,5 +1,5 @@
 #include "imgui/imgui.h"
+#include <iostream>
 
-int main(){
-    IMGUI_CHECKVERSION();
-}
+using namespace std;
+int main() { cout << IMGUI_CHECKVERSION() << endl; }

@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
-project(MyVulkanApp)
+project(GraphFlow)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Vulkan REQUIRED)
 find_package(glfw3 REQUIRED)
 
-set(IMGUI_DIR /home/kanditty/exfat_windows_cachy/Documents/lmgui/imgui)
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
 
 add_library(imgui STATIC
     ${IMGUI_DIR}/imgui.cpp
@@ -15,16 +19,12 @@ add_library(imgui STATIC
     ${IMGUI_DIR}/backends/imgui_impl_vulkan.cpp
 )
 
-target_include_directories(imgui PUBLIC
-    ${IMGUI_DIR}
-    ${IMGUI_DIR}/backends
-)
-
-# Vulkan::Vulkan — двойное двоеточие, не одинарное
+target_include_directories(imgui PUBLIC ${IMGUI_DIR} ${IMGUI_DIR}/backends)
 target_link_libraries(imgui PUBLIC Vulkan::Vulkan glfw)
 
-# add_executable требует исходники, не имя файла
 add_executable(app main.cpp)
-
-# имя должно совпадать с add_executable — app, не main.cpp
 target_link_libraries(app PRIVATE imgui)
+
+set_target_properties(app PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+)
