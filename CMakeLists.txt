@@ -15,7 +15,8 @@ add_library(imgui STATIC
     ${IMGUI_DIR}/imgui_draw.cpp
     ${IMGUI_DIR}/imgui_tables.cpp
     ${IMGUI_DIR}/imgui_widgets.cpp
-    ${IMGUI_DIR}/backends/imgui_impl_sdl3.cpp 
+    ${IMGUI_DIR}/imgui_demo.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_sdl3.cpp
     ${IMGUI_DIR}/backends/imgui_impl_vulkan.cpp
 )
 
@@ -24,7 +25,12 @@ target_link_libraries(imgui PUBLIC Vulkan::Vulkan SDL3::SDL3)
 
 add_executable(app main.cpp)
 target_link_libraries(app PRIVATE imgui)
-
 set_target_properties(app PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+)
+
+add_executable(example_sdl3_vulkan examples/example_sdl3_vulkan.cpp)
+target_link_libraries(example_sdl3_vulkan PRIVATE imgui)
+set_target_properties(example_sdl3_vulkan PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
