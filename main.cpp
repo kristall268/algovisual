@@ -1,6 +1,8 @@
 #include "imgui_impl_vulkan.h"
+#include <cstdint>
 #include <iostream>
-
+#include <vector>
+#include <vulkan/vulkan_core.h>
 using namespace std;
 
 #ifdef IMGUI_IMPL_VULKAN_USE_VOLK
@@ -28,5 +30,25 @@ static void checK_vk_result(VkResult err) {
   cout << "[vulkan] Error: VkResult = " << err << endl;
   if (err < 0) {
     abort();
+  }
+}
+
+static void SetupVulkan(vector<const char *> instance_extensions) {
+  VkResult err;
+  {
+    VkInstanceCreateInfo create_info = {};
+    create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+
+#ifdef IMGUI_VULKAN_DEBUG_REPORT
+    const char *layers = {"VK_LAYER_KHRONOS_validation"};
+    create_info.enabledLayerCount = 1;
+    create_info.ppEnabledLayersName = layer;
+    instance_extensions.push_back("VK_EXT_debug_report");
+#endif
+
+    create_info.enabledExtensionCount = (uint32_t)instance_extensions.size();
+    create_info.ppEnabledLayerNames = instance_extensions.data();
+    err = vkCreateInstance(&create_info, g_Allocator, &g_Instance);
+    checK_vk_result(err);
   }
 }
