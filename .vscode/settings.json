@@ -1,4 +1,4 @@
-{
+{   "files.autoSave": "afterDelay",
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.configureOnOpen": true,
     "cmake.generator": "Ninja",
