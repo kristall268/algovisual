@@ -1,6 +1,5 @@
 #include "imgui_impl_vulkan.h"
-#include <vulkan/vulkan_core.h>
-
+#include "vulkan/vulkan.h"
 // Data
 static VkAllocationCallbacks *g_Allocator = nullptr;
 static VkInstance g_Instance = VK_NULL_HANDLE;
@@ -16,3 +15,9 @@ static uint32_t g_MinImageCount = 2;
 static bool g_SwapChainRebuild = false;
 
 static void check_vk_result(VkResult err);
+
+static bool
+IsExtensionAvailable(const ImVector<VkExtensionProperties> &properties,
+                     const char *extension);
+
+static void SetupVulkan(ImVector<const char *> instance_extensions);

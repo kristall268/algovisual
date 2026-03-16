@@ -26,18 +26,16 @@ endif()
 
 set(IMGUI_SOURCES
     ${IMGUI_DIR}/imgui.cpp
-    ${IMGUI_DIR}/imgui_demo.cpp
+    ${IMGUI_DIR}/imgui_demo.cpp 
     ${IMGUI_DIR}/imgui_draw.cpp
     ${IMGUI_DIR}/imgui_tables.cpp
     ${IMGUI_DIR}/imgui_widgets.cpp
-    # SDL3 + Vulkan бэкенды
+    # SDL3 + Vulkan backends
     ${IMGUI_DIR}/backends/imgui_impl_sdl3.cpp
     ${IMGUI_DIR}/backends/imgui_impl_vulkan.cpp
 )
  
 # ── Исходники проекта ─────────────────────────────────────────
-# Добавлен CONFIGURE_DEPENDS для автоматического подхвата новых файлов
-# Убрана папка main, теперь все исходники ищутся в src
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
 )
@@ -48,7 +46,7 @@ add_executable(${PROJECT_NAME}
     ${IMGUI_SOURCES}
 )
 
-# Убрана папка main из include_directoriesw
+
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${IMGUI_DIR}
     ${IMGUI_DIR}/backends
