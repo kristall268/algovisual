@@ -3,12 +3,12 @@ project(algovisual CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)   # для clangd / .vscode
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)   # for clangd / .vscode
 
-# ---- Выходные директории --------------------------------------
+# ---- Output Directories --------------------------------------
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-# ── Зависимости ───────────────────────────────────────────────
+# ── Dependency ───────────────────────────────────────────────
 find_package(Vulkan REQUIRED)
 
 # SDL3: сначала пробуем CMake-конфиг, иначе pkg-config
@@ -33,13 +33,13 @@ set(IMGUI_SOURCES
     ${IMGUI_DIR}/backends/imgui_impl_sdl3.cpp
     ${IMGUI_DIR}/backends/imgui_impl_vulkan.cpp
 )
-
+ 
 # ── Исходники проекта ─────────────────────────────────────────
 file(GLOB_RECURSE PROJECT_SOURCES
     "${CMAKE_SOURCE_DIR}/main/*.cpp"
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
 )
-
+ 
 # ── Исполняемый файл ──────────────────────────────────────────
 add_executable(${PROJECT_NAME}
     ${PROJECT_SOURCES}
