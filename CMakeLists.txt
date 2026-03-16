@@ -19,8 +19,9 @@ if(NOT SDL3_FOUND)
 endif()
 
 # ── Dear ImGui ────────────────────────────────────────────────
+# Изменен путь: теперь ImGui ожидается в папке external/imgui
 if(NOT DEFINED IMGUI_DIR)
-    set(IMGUI_DIR "${CMAKE_SOURCE_DIR}/imgui/")
+    set(IMGUI_DIR "${CMAKE_SOURCE_DIR}/external/imgui")
 endif()
 
 set(IMGUI_SOURCES
@@ -35,8 +36,9 @@ set(IMGUI_SOURCES
 )
  
 # ── Исходники проекта ─────────────────────────────────────────
-file(GLOB_RECURSE PROJECT_SOURCES
-    "${CMAKE_SOURCE_DIR}/main/*.cpp"
+# Добавлен CONFIGURE_DEPENDS для автоматического подхвата новых файлов
+# Убрана папка main, теперь все исходники ищутся в src
+file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
 )
  
@@ -46,11 +48,11 @@ add_executable(${PROJECT_NAME}
     ${IMGUI_SOURCES}
 )
 
+# Убрана папка main из include_directoriesw
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${IMGUI_DIR}
     ${IMGUI_DIR}/backends
     ${Vulkan_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/main
     ${CMAKE_SOURCE_DIR}/include
 )
 
