@@ -18,12 +18,15 @@ target_link_libraries(av_engine
 )
 
 target_compile_definitions(av_engine PUBLIC
-    $<$<CONFIG:Debug>:AV_DEBUG APP_USE_VULKAN_DEBUG_REPORT>
+    $<$<CONFIG:Debug>:AV_DEBUG>
 )
 
 if(MSVC)
     target_compile_options(av_engine PRIVATE /W4 /MP /permissive-)
     target_compile_definitions(av_engine PUBLIC NOMINMAX WIN32_LEAN_AND_MEAN)
 else()
-    target_compile_options(av_engine PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(av_engine PRIVATE
+        -Wall -Wextra -Wpedantic
+        -Wno-missing-field-initializers
+    )
 endif()

@@ -16,7 +16,7 @@ ImGuiLayer::ImGuiLayer(SDL_Window* w, VkContext& ctx, VkSwapchain& sc) {
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
     ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
     ImGui_ImplSDL3_InitForVulkan(w);
 

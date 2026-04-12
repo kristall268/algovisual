@@ -7,12 +7,12 @@ namespace av {
 class Logger {
 public:
     static void init();
-    static std::shared_ptr<spdlog::Logger>& getCoreLogger();
-    static std::shared_ptr<spdlog::Logger>& getAppLogger();
+    static std::shared_ptr<spdlog::logger>& core() { return s_core; }
+    static std::shared_ptr<spdlog::logger>& app() { return s_app; }
 
 private:
-    static std::shared_ptr<spdlog::Logger> s_coreLogger;
-    static std::shared_ptr<spdlog::Logger> s_appLogger;
+    static std::shared_ptr<spdlog::logger> s_core;
+    static std::shared_ptr<spdlog::logger> s_app;
 };
 } // namespace av
 
