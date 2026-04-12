@@ -1,0 +1,14 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get install -y clang-format
+      - name: Check formatting
+        run: |
+          find engine app -name "*.cpp" -o -name "*.h" | \
+            xargs clang-format --dry-run --Werror
