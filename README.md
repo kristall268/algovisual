@@ -103,7 +103,7 @@ cmake --build --preset debug
 Run:
 
 ```bash
-./build/debug/bin/algovisual
+./bin/algovisual
 ```
 
 For an optimized build use `release` instead of `debug`.
