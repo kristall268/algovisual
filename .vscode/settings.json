@@ -1,21 +1,64 @@
-{   "files.autoSave": "afterDelay",
-    "cmake.buildDirectory": "${workspaceFolder}/build",
-    "cmake.configureOnOpen": true,
-    "cmake.generator": "Ninja",
-    "C_Cpp.intelliSenseEngine": "disabled",
-    "clangd.arguments": [
-        "--background-index",
-        "--clang-tidy",
-        "--completion-style=detailed",
-        "--header-insertion=iwyu",
-        "--compile-commands-dir=${workspaceFolder}/build"
-    ],
-    "editor.formatOnSave": true,
-    "C_Cpp.formatting": "clangFormat",
-    "editor.defaultFormatter": "ms-vscode.cpptools",
-    "files.associations": {
-        "*.vert": "glsl",
-        "*.frag": "glsl",
-        "*.comp": "glsl"
-    }
+{
+  "files.autoSave": "afterDelay",
+  "files.associations": {
+    "*.vert": "glsl",
+    "*.frag": "glsl",
+    "*.comp": "glsl",
+    "*.h": "cpp"
+  },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
+  "editor.formatOnSave": true,
+  "editor.rulers": [100],
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format",
+    "editor.tabSize": 4
+  },
+  "[c]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "[cmake]": {
+    "editor.tabSize": 2
+  },
+
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "C_Cpp.autocomplete": "disabled",
+  "C_Cpp.errorSquiggles": "disabled",
+  "C_Cpp.formatting": "disabled",
+
+  "clangd.arguments": [
+    "--background-index",
+    "--clang-tidy",
+    "--completion-style=detailed",
+    "--header-insertion=iwyu",
+    "--pch-storage=memory",
+    "--all-scopes-completion",
+    "--compile-commands-dir=${workspaceFolder}/build"
+  ],
+  "clangd.onConfigChanged": "restart",
+
+  "cmake.useCMakePresets": "always",
+  "cmake.configureOnOpen": true,
+  "cmake.generator": "Ninja",
+  "cmake.copyCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+
+  "search.exclude": {
+    "**/build": true,
+    "**/bin": true,
+    "**/external": true,
+    "**/.cache": true
+  },
+  "files.watcherExclude": {
+    "**/build/**": true,
+    "**/bin/**": true,
+    "**/.cache/**": true
+  },
+  "cSpell.words": [
+    "algovisual"
+  ]
 }

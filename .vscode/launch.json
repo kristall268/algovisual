@@ -1,52 +1,46 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Debug: algovisual",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/algovisual",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "description": "Set disassembly flavour to Intel",
-                    "text": "-gdb-set disassembly-flavor intel",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "CMake: Build (Debug)"
-        },
-        {
-            "name": "Release: algovisual",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/algovisual",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "CMake: Build (Release)"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Linux: Debug algovisual (LLDB)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/linux-debug/bin/algovisual",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "CMake: Reconfigure + Build",
+      "env": {
+        "VK_LAYER_PATH": "/usr/share/vulkan/explicit_layer.d"
+      }
+    },
+    {
+      "name": "Linux: Debug algovisual (GDB)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/linux-debug/bin/algovisual",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        { "description": "Enable pretty-printing", "text": "-enable-pretty-printing", "ignoreFailures": true },
+        { "description": "Intel disassembly", "text": "-gdb-set disassembly-flavor intel", "ignoreFailures": true }
+      ],
+      "preLaunchTask": "CMake: Reconfigure + Build"
+    },
+    {
+      "name": "Windows: Debug algovisual (MSVC)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/windows-debug/bin/algovisual.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "preLaunchTask": "CMake: Reconfigure + Build",
+      "environment": [
+        { "name": "VK_LAYER_PATH", "value": "${env:VULKAN_SDK}\\Bin" }
+      ]
+    }
+  ]
 }

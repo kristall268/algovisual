@@ -1,75 +1,51 @@
-cmake_minimum_required(VERSION 3.20)
-project(algovisual CXX)
+cmake_minimum_required(VERSION 3.21)
+project(algovisual LANGUAGES CXX)
 
+if(APPLE)
+  message(FATAL_ERROR "macOS is not yet supported (planned via MoltenVK).")
+endif()
+
+
+# ==================================================================================================
+#                     GLOBAL SETTINGS
+# ==================================================================================================
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)   # for clangd / .vscode
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# ---- Output Directories --------------------------------------
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
+endif()
 
-# ── Dependency ───────────────────────────────────────────────
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+
+
+# ==================================================================================================
+#                     PROJECT OPTIONS
+# ==================================================================================================
+#option(AV_BUILD_EXAMPLES "Build example mini-applications" ON)
+#option(AV_BUILD_TESTS "Build unit tests" ON)
+
+# ==================================================================================================
+#                     Dependencies (System / vcpkg)
+# ==================================================================================================
 find_package(Vulkan REQUIRED)
 
-# SDL3: сначала пробуем CMake-конфиг, иначе pkg-config
-find_package(SDL3 QUIET CONFIG)
-if(NOT SDL3_FOUND)
+find_package(SDL3 CONFIG QUIET)
+if(NOT SDL3_FOUND AND UNIX)
     find_package(PkgConfig REQUIRED)
-    pkg_check_modules(SDL3 REQUIRED sdl3)
+    pkg_check_modules(SDL3 REQUIRED IMPORTED_TARGET sdl3)
 endif()
 
-# ── Dear ImGui ────────────────────────────────────────────────
-# Изменен путь: теперь ImGui ожидается в папке external/imgui
-if(NOT DEFINED IMGUI_DIR)
-    set(IMGUI_DIR "${CMAKE_SOURCE_DIR}/external/imgui")
-endif()
+find_package(spdlog CONFIG REQUIRED)
 
-set(IMGUI_SOURCES
-    ${IMGUI_DIR}/imgui.cpp
-    ${IMGUI_DIR}/imgui_demo.cpp 
-    ${IMGUI_DIR}/imgui_draw.cpp
-    ${IMGUI_DIR}/imgui_tables.cpp
-    ${IMGUI_DIR}/imgui_widgets.cpp
-    # SDL3 + Vulkan backends
-    ${IMGUI_DIR}/backends/imgui_impl_sdl3.cpp
-    ${IMGUI_DIR}/backends/imgui_impl_vulkan.cpp
-)
- 
-# ── Исходники проекта ─────────────────────────────────────────
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_SOURCE_DIR}/src/*.cpp"
-)
- 
-# ── Исполняемый файл ──────────────────────────────────────────
-add_executable(${PROJECT_NAME}
-    ${PROJECT_SOURCES}
-    ${IMGUI_SOURCES}
-)
-
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${IMGUI_DIR}
-    ${IMGUI_DIR}/backends
-    ${Vulkan_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/include
-)
-
-# Линкуем SDL3 (поддержка обоих вариантов find_package)
-if(TARGET SDL3::SDL3)
-    target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 Vulkan::Vulkan)
-else()
-    target_include_directories(${PROJECT_NAME} PRIVATE ${SDL3_INCLUDE_DIRS})
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL3_LIBRARIES} Vulkan::Vulkan)
-endif()
-
-# ── Опции компиляции ──────────────────────────────────────────
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-    # Validation layers включаются только в Debug
-    $<$<CONFIG:Debug>:IMGUI_VULKAN_DEBUG_REPORT>
-)
-
-if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /W3 /MP)
-else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+# ==================================================================================================
+#                     TO COMPILE SHADERS, LOOK FOR glslangValidator
+# ==================================================================================================
+find_program(GLSLANG_VALIDATOR glslangValidator
+    HINTS ENV VULKAN_SDK PATH_SUFFIXES bin)
+if(NOT GLSLANG_VALIDATOR)
+    message(WARNING "glslangValidator not found — shaders will not compile.")
 endif()

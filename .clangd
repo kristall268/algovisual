@@ -1,0 +1,15 @@
+CompileFlags:
+  CompilationDatabase: build
+
+Diagnostics:
+  ClangTidy:
+    Add:
+      - modernize-*
+      - readability-*
+      - performance-*
+      - bugprone-*
+    Remove:
+      - modernize-use-trailing-return-type
+      - readability-identifier-length
+      - readability-magic-numbers
+  UnusedIncludes: Strict
