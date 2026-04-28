@@ -96,8 +96,8 @@ git submodule update --init --recursive
 Configure and build:
 
 ```bash
-cmake --preset debug
-cmake --build --preset debug
+cmake --preset linux-debug
+cmake --build --preset linux-debug
 ```
 
 Run:
@@ -106,7 +106,7 @@ Run:
 ./bin/algovisual
 ```
 
-For an optimized build use `release` instead of `debug`.
+For an optimized build use `linux-release` instead of `linux-debug`.
 
 ### Build options
 
@@ -118,7 +118,7 @@ For an optimized build use `release` instead of `debug`.
 Pass them at configure time, e.g.:
 
 ```bash
-cmake --preset debug -DAV_BUILD_TESTS=ON
+cmake --preset linux-debug -DAV_BUILD_TESTS=ON
 ```
 
 ## Development
