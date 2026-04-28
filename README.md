@@ -110,10 +110,10 @@ For an optimized build use `release` instead of `debug`.
 
 ### Build options
 
-| Option              | Default | Description                       |
-| ------------------- | ------- | --------------------------------- |
-| `AV_BUILD_EXAMPLES` | `ON`    | Build small standalone demos      |
-| `AV_BUILD_TESTS`    | `OFF`   | Build unit tests                  |
+| Option              | Default | Description                  |
+| ------------------- | ------- | ---------------------------- |
+| `AV_BUILD_EXAMPLES` | `ON`    | Build small standalone demos |
+| `AV_BUILD_TESTS`    | `OFF`   | Build unit tests             |
 
 Pass them at configure time, e.g.:
 

@@ -4,13 +4,13 @@
 #include <av/render/vk_context.h>
 #include <av/render/vk_swapchain.h>
 #include <av/scene/scene.h>
+#include <av/scene/scene_manager.h>
 #include <av/ui/imgui_layer.h>
 
 #include <SDL3/SDL.h>
 #include <imgui.h>
 
 #include <chrono>
-#include <vector>
 
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_vulkan.h>
@@ -23,8 +23,7 @@ struct Application::Impl {
     VkSurfaceKHR surface = VK_NULL_HANDLE;
     std::unique_ptr<VkSwapchain> swap;
     std::unique_ptr<ImGuiLayer> ui;
-    std::vector<std::unique_ptr<IScene>> scenes;
-    int active_scene = -1;
+    SceneManager scenes;
 };
 
 Application::Application(int w, int h, std::string title) : impl_(std::make_unique<Impl>()) {
@@ -53,6 +52,10 @@ Application::Application(int w, int h, std::string title) : impl_(std::make_uniq
 Application::~Application() {
     if (impl_->ctx)
         vkDeviceWaitIdle(impl_->ctx->device());
+    // Tear down scenes while ImGui/Vulkan are still alive — scene on_detach
+    // may touch ImGui state or Vulkan resources.
+    impl_->scenes.reset(nullptr);
+    impl_->scenes.process_pending();
     impl_->ui.reset();
     impl_->swap.reset();
     if (impl_->surface && impl_->ctx)
@@ -62,10 +65,8 @@ Application::~Application() {
     AV_INFO("Application exited cleanly");
 }
 
-void Application::register_scene(std::unique_ptr<IScene> scene) {
-    impl_->scenes.push_back(std::move(scene));
-    if (impl_->active_scene < 0)
-        impl_->active_scene = 0;
+void Application::push_scene(std::unique_ptr<IScene> scene) {
+    impl_->scenes.push(std::move(scene));
 }
 
 void Application::run() {
@@ -98,31 +99,23 @@ void Application::run() {
         float dt = std::chrono::duration<float>(now - prev).count();
         prev = now;
 
+        // Apply any push/pop/replace/reset queued during the previous frame
+        // before we start drawing the new one.
+        impl_->scenes.process_pending();
+
         impl_->ui->begin_frame();
 
-        // UI: переключатель сцен — пригодится с этапа 2, но каркас уже тут
-        if (ImGui::Begin("algovisual")) {
+        if (ImGui::Begin("Stats")) {
             ImGui::Text("FPS: %.1f  (%.2f ms)", 1.0f / dt, dt * 1000.0f);
-            ImGui::Separator();
-            if (impl_->scenes.empty()) {
-                ImGui::TextDisabled("No scenes registered");
-            } else {
-                for (int i = 0; i < (int)impl_->scenes.size(); ++i) {
-                    bool sel = (i == impl_->active_scene);
-                    if (ImGui::Selectable(impl_->scenes[i]->name(), sel))
-                        impl_->active_scene = i;
-                }
-            }
+            if (auto* s = impl_->scenes.active())
+                ImGui::Text("Scene: %s  (depth %zu)", s->name(), impl_->scenes.size());
+            else
+                ImGui::TextDisabled("No active scene");
         }
         ImGui::End();
 
-        if (impl_->active_scene >= 0) {
-            auto& s = *impl_->scenes[impl_->active_scene];
-            s.on_update(dt);
-            s.on_ui();
-        }
-
-        ImGui::ShowDemoWindow(); // для проверки — на этапе 2 уберём
+        impl_->scenes.on_update(dt);
+        impl_->scenes.on_ui();
 
         impl_->ui->end_frame_and_render(*impl_->swap, *impl_->ctx);
     }

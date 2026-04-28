@@ -10,7 +10,7 @@ public:
     Application(int w, int h, std::string title);
     ~Application();
 
-    void register_scene(std::unique_ptr<IScene> scene); // stub для этапа 2
+    void push_scene(std::unique_ptr<IScene> scene);
     void run();
 
 private:

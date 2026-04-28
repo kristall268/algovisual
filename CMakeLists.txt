@@ -3,7 +3,7 @@ project(algovisual LANGUAGES CXX)
 
 if(APPLE)
     message(FATAL_ERROR "macOS пока не поддерживается (планируется через MoltenVK).")
-endif()
+endif() 
 
 # ---- Global settings ----------------------------------------
 set(CMAKE_CXX_STANDARD 17)
